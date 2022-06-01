@@ -24,13 +24,11 @@ class EtaSSG{
 
     async copyAssets(){
         await Promise.all(
-            this.config.assets.map(async (folderName) => {
-                let path = join(this.config.root, folderName)
-                if(!existsSync(path)) return
-
+            this.config.assets.map(async (filePath) => {
+                if(!existsSync(filePath)) return
+                let outputPath = filePath.replace(this.config.root, this.config.output)
                 
-                let outputPath = join(this.config.output, folderName)
-                return cp(path, outputPath, { recursive: true })
+                return cp(filePath, outputPath, { recursive: true })
             })
         ).then(() => console.log("Finished: Copy Assets"))
     }
@@ -42,6 +40,8 @@ class EtaSSG{
             let params = { title, relative, headings }
     
             let page = await readFile(filePath, "utf-8")
+
+            console.log(savePath, JSON.stringify(params))
     
             let html = layout == null ?
                 Eta.render(page, params) :
@@ -70,7 +70,7 @@ class EtaSSG{
                     let savePath = key === "." ?
                         [...paths, "index.html"].join("/") :
                         [...paths, rmExtFromFilename(file), "index.html"].join("/");
-                    let folders = savePath.split("/").slice(2, -1)
+                    let folders = savePath.split("/").slice(1, -1)
         
                     routeList.push({
                         filePath: ["./tmp/views", file].join("/"),
@@ -143,11 +143,13 @@ class EtaSSG{
     normalizePaths(config){
         if(!config.root) return config
 
-        const { root, views, markdown, assets } = config
+        const { root, views, markdown, assets, output } = config
 
         config.views = join(root, views)
         config.markdown = join(root, markdown)
         config.assets = assets.map(str => join(root, str))
+        config.root = root.replace("./", "")
+        config.output = output.replace("./", "")
 
         return config
     }
