@@ -40,8 +40,6 @@ class EtaSSG{
             let params = { title, relative, headings }
     
             let page = await readFile(filePath, "utf-8")
-
-            console.log(savePath, JSON.stringify(params))
     
             let html = layout == null ?
                 Eta.render(page, params) :
