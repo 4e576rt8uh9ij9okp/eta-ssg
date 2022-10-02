@@ -16,6 +16,8 @@ ETA- SSG static site generator
         views: "views",         //Folder with Eta files.
         markdown: "markdown",   //Folder with Markdown files.
         output: "./www",        //Output foler with the finished website
+        
+        title: "myWebsite",     //Can be called as <%~ it.title %> in view files.
         assets: ["css", "img"]  //Folders that will be copied 1:1 into output folder.
     })
 
