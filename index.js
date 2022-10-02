@@ -141,14 +141,14 @@ class EtaSSG{
     normalizeConfig(config){
         if(!config.root) return config
 
-        const { root, views, markdown, assets, output } = config
+        const { root, views, markdown, assets, output, title} = config
 
         config.views = join(root, views)
         config.markdown = join(root, markdown)
         config.assets = assets.map(str => join(root, str))
         config.root = root.replace("./", "")
         config.output = output.replace("./", "")
-        config.title = ""
+        config.title = title || ""
 
         return config
     }
