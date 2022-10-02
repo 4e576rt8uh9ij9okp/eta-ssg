@@ -7,7 +7,7 @@ const { join, extname, basename, dirname } = require("path")
 
 class EtaSSG{
     constructor(config){
-        this.config = this.normalizePaths(config)
+        this.config = this.normalizeConfig(config)
         this.tmp = {headings: []}
         this.eta = Eta
         this.marked = Marked
@@ -36,7 +36,7 @@ class EtaSSG{
     async createPages(){
         await Promise.all(this.routes.map(async (route) => {
             let { filePath, savePath, relative, layout, folders, headings } = route
-            let title = ["BuildPC.org", ...folders].map(v => capitalizeFirstLetter(v).replace("-", " ")).join(" - ")
+            let title = [this.config.title, ...folders].map(v => capitalizeFirstLetter(v).replace("-", " ")).join(" - ")
             let params = { title, relative, headings }
     
             let page = await readFile(filePath, "utf-8")
@@ -138,7 +138,7 @@ class EtaSSG{
         if(!existsSync("./tmp")) mkdir("./tmp")
     }
 
-    normalizePaths(config){
+    normalizeConfig(config){
         if(!config.root) return config
 
         const { root, views, markdown, assets, output } = config
@@ -148,6 +148,7 @@ class EtaSSG{
         config.assets = assets.map(str => join(root, str))
         config.root = root.replace("./", "")
         config.output = output.replace("./", "")
+        config.title = ""
 
         return config
     }
